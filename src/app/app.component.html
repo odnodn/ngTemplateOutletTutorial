@@ -1,0 +1,10 @@
+<app-list [data]="productList" [itemTemplate]="item">
+  <ng-template #item let-item>
+    <div style="display: flex; justify-content: space-between;">
+      <span>
+        {{ item.id }} - <b>{{ item.name }}</b>
+      </span>
+      <span>Stars: {{ item.rating }}</span>
+    </div>
+  </ng-template>
+</app-list>
