@@ -27,13 +27,13 @@ export class ParentComponent {}
 <figcaption>Snippet 1: Transclusion</figcaption>
 
 Although this transclusion technique is great for simple content projection, what if you want your projected content to be context-aware. For example, while implementing a list component you want the items template to be defined in the parent component while being context-aware (of what is the current item it hosts).
-For those kinds of scenarios, Angular comes with a great API called `NgTemplateOutlet`.
+For those kinds of scenarios, Angular comes with a great API called `ngTemplateOutlet`.
 
-In this post, we will we will define what `templateOutlet` is then we will build a list component with this technique. We will implement this and another use-case together so by the end of this post you should feel comfortable to start using this in your components.
+In this post, we will we will define what `ngTemplateOutlet` is then we will build the list component we mentioned above as well as a tab component to see some use-cases. We will do the implementation step-by-step, so by the end of this post you should feel comfortable using this in your components :)
 
 # Definition
 
-From the current Angular documentation `templateOutlet` is a directive that: **Inserts an embedded view from a prepared TemplateRef**.
+From the current Angular documentation `ngTemplateOutlet` is a directive that: **Inserts an embedded view from a prepared TemplateRef**.
 
 This directive has two properties:
 
@@ -63,23 +63,76 @@ If you find this too abstract, this is how we use it:
 <figcaption>Snippet 2: ngTemplateOutlet usage</figcaption>
 
 In the code above, the child component will have a paragraph containing 'Joe - 42'.
-Note that for the name (`let-name`) we did not specify which property of the context object we had to use because the name was stored in the `$implicit` property. In the other hand, for the age (`let-age="age"`) we did specify the name of the property to use (in this case it was `age`).
+<b>Note</b> that for the name (`let-name`) we did not specify which property of the context object we had to use because the name was stored in the `$implicit` property. In the other hand, for the age (`let-age="age"`) we did specify the name of the property to use (in this case it was `age`).
 
 Well enough with the definitions let's start coding.
 
-# Use case #1: Lists components
+# Use case #1: Context-aware template
 
 Let's build a list component that takes two input from it's parent:
 
 1. data: A list of objects
-2. item: a template that will be used to represent each element of the list
+2. itemTemplate: a template that will be used to represent each element of the list
 
-Let's generate the list component using the Angular schematics `ng g c components/list`. Once that's done let's implement the component which should look like this:
+Let's generate the list component using the Angular schematics (`ng g c components/list`). Once that's done let's implement the component which should look like this:
 
 ```typescript
+@Component({
+  selector: 'app-list',
+  template: `
+    <ul class="list">
+      <li class="list-item" *ngFor="let item of data">
+        <ng-container
+          [ngTemplateOutlet]="itemTemplate"
+          [ngTemplateOutletContext]="{ $implicit: item }"
+        ></ng-container>
+      </li>
+    </ul>
+  `,
+  styles: [
+    `
+      .list {
+        list-style: none;
+        padding: 0;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ListComponent {
+  @Input() data: any[];
+  @Input() itemTemplate: TemplateRef<HTMLElement>; // a template reference of a HTML element
+}
 ```
 
-# Use case #2: Overloading templates
+<figcaption>Snippet 3.1: List component implementation</figcaption>
+
+Then in the parent component we need to call the list component with a list (of objects) and a template reference:
+
+```html
+<app-list
+  [itemTemplate]="item"
+  [data]="[{ id: 4, name: 'Laptop', rating: 3 },
+    { id: 5, name: 'Phone', rating: 4 },
+    { id: 6, name: 'Mice', rating: 4 }]"
+>
+  <ng-template #item let-item>
+    <div style="display: flex; justify-content: space-between;">
+      <span> {{ item.id }} - <b>{{ item.name }}</b> </span>
+      <mark> Stars: {{ item.rating }} </mark>
+    </div>
+  </ng-template>
+</app-list>
+```
+
+<figcaption>Snippet 3.2: Parent component template</figcaption>
+
+<b>Note</b> that we placed the ng-template (item template) inside the app-list component tags. This is only for readability, you could place the item template anywhere you want in the parent template.
+Also i put some inline styles in the item template, but you could also give it a class and style it in the parent component style file.
+
+# Use case #2: Template overloading
+
+We saw how `ngTemplateOutlet` could help us to project context-aware templates, let's see another great use-case: template overloading.
 
 # Wrapping up
 

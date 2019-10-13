@@ -25,3 +25,10 @@ html {
 body {
   padding: 1rem;
 }
+
+mark {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+  display: inline-block;
+  padding: 0 0.5rem;
+}
