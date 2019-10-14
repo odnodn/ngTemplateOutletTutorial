@@ -26,6 +26,12 @@ body {
   padding: 1rem;
 }
 
+main {
+  max-width: 100%;
+  width: 600px;
+  margin: auto;
+}
+
 mark {
   background-color: var(--accent-color);
   color: var(--bg-color);

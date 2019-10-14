@@ -1,0 +1,16 @@
+.card {
+  border: 1px solid rgba($color: #000000, $alpha: 0.2);
+  border-radius: 5px;
+
+  padding: 1rem;
+  header {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  article {
+    &:first-letter {
+      text-transform: capitalize;
+    }
+  }
+}

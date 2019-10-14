@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import { CardComponent } from './components/card/card.component';
 import { ListComponent } from './components/list/list.component';
-import { TabsComponent } from './components/tabs/tabs.component';
 
 @NgModule({
-  declarations: [AppComponent, ListComponent, TabsComponent],
+  declarations: [AppComponent, ListComponent, CardComponent],
   imports: [BrowserModule],
   providers: [],
   bootstrap: [AppComponent],

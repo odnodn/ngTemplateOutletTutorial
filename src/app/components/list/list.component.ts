@@ -12,14 +12,7 @@ import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular
       </li>
     </ul>
   `,
-  styles: [
-    `
-      .list {
-        list-style: none;
-        padding: 0;
-      }
-    `,
-  ],
+  styleUrls: ['list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListComponent {
