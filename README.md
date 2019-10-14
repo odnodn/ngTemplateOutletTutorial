@@ -1,6 +1,6 @@
 # Introduction
 
-To build reusable and developer friendly components, we need to make them more dynamic (read more adaptable). Great news, Angular comes with some great tools for that. For instance, we could inject content to our components using `<ng-content>` (example in Snippet 1: Transclution).
+To build reusable and developer friendly components, we need to make them more dynamic (read more adaptable). Great news, Angular comes with some great tools for that. For instance, we could inject content to our components using `<ng-content>`:
 
 ```typescript
 @Component({
@@ -27,9 +27,9 @@ export class ParentComponent {}
 <figcaption>Snippet 1: Transclusion</figcaption>
 
 Although this transclusion technique is great for simple content projection, what if you want your projected content to be context-aware. For example, while implementing a list component you want the items template to be defined in the parent component while being context-aware (of what is the current item it hosts).
-For those kinds of scenarios, Angular comes with a great API called `ngTemplateOutlet`.
+For those kinds of scenarios, Angular comes with a great API called `ngTemplateOutlet`!
 
-In this post, we will we will define what `ngTemplateOutlet` is then we will build the list component we mentioned above as well as a card component to see two most common `ngTemplateOutlet` use-cases. We will do the implementation step-by-step, so by the end of this post you should feel comfortable using this in your components :)
+In this post, we will define what `ngTemplateOutlet` is, then we will build the list component we mentioned above as well as a card component to see two most common `ngTemplateOutlet` use-cases. We will do the implementation of these components step-by-step, so by the end of this post you should feel comfortable using this in your Angular components :)
 
 # Definition
 
@@ -42,20 +42,24 @@ This directive has two properties:
 
 What this means is that in the child component we can get a template from the parent component and we can inject a context object into this template. We can then use this context object in the parent component.
 
-If you find this too abstract, this is how we use it:
+If you find this too abstract, here is an example of how to use it:
 
 ```html
 <!-- Child component -->
-<ng-container
-  [ngTemplateOutlet]="templateRefFromParentComponent"
-  [ngTemplateOutletContext]="{ $implicit: 'Joe', age: 42 }"
->
-</ng-container>
+<child-component>
+  <ng-container
+    [ngTemplateOutlet]="templateRefFromParentComponent"
+    [ngTemplateOutletContext]="{ $implicit: 'Joe', age: 42 }"
+  >
+  </ng-container>
+</child-component>
 
 <!-- Parent component -->
-<ng-template #someTemplate let-name let-age="age">
-  <p>{{ name }} - {{ age }}</p>
-</ng-template>
+<parent-component [templateRefFromParentComponent]="someTemplate">
+  <ng-template #someTemplate let-name let-age="age">
+    <p>{{ name }} - {{ age }}</p>
+  </ng-template>
+</parent-component>
 ```
 
 <figcaption>Snippet 2: ngTemplateOutlet usage</figcaption>
@@ -63,14 +67,16 @@ If you find this too abstract, this is how we use it:
 In the code above, the child component will have a paragraph containing 'Joe - 42'.
 <b>Note</b> that for the name (`let-name`) we did not specify which property of the context object we had to use because the name was stored in the `$implicit` property. In the other hand, for the age (`let-age="age"`) we did specify the name of the property to use (in this case it was `age`).
 
-Well enough with the definitions let's start coding.
+Well, enough with the definitions. Let's start coding.
 
 # Use case #1: Context-aware template
 
 Let's build a list component that takes two inputs from it's parent:
 
-1. data: A list of objects
-2. itemTemplate: a template that will be used to represent each element of the list
+1. data: A list of objects.
+2. itemTemplate: a template that will be used to represent each element of the list.
+
+> run `ng new templateOutletTutorial --minimal` to generate a small Angular project to code along
 
 Let's generate the list component using the Angular schematics (`ng g c components/list`). Once that's done let's implement the component which should look like this:
 
@@ -127,8 +133,8 @@ We saw how `ngTemplateOutlet` could help us to project context-aware templates, 
 
 For this, we will build a card component that consists of two parts:
 
-1. title: A title for the card
-2. content: The main content of the card
+1. title: A title for the card.
+2. content: The main content of the card.
 
 For the title we will pass a simple string, and for the content we can inject it using content projection. Let's do just that after creating the card component with the Angular schematics (`ng g c components/card`), the component should look like this:
 
@@ -161,7 +167,8 @@ We call it the parent component template:
 <figcaption>Snippet 4.2: Parent component template with a string *title*</figcaption>
 
 Now let's say we want to put an image (`<img>`) in the title, or use another component in the title template. We would be stuck because the title property only takes a string.
-To solve those kind of problems, we could implement a new behavior in our card component. We could say that the title could be a string or a TemplateRef. In case it is a string we will use string interpolation to bind it to the template, otherwise we will use `ngTemplateOutlet`. The new card component should then look like this:
+To solve this problem, we could implement a new behavior in our card component. We could say that the title could be a string or a TemplateRef. In case it is a string we will use string interpolation to bind it to the template, otherwise we will use `ngTemplateOutlet`.
+After implementing the changes, the new card component should then look like this:
 
 ```typescript
 @Component({
@@ -205,7 +212,7 @@ We call it the parent component template like this:
 
 ## Hey, let's stay in touch!
 
-I'm working on a lot of awesome posts and tutorials to come. If you liked this one, make sure to follow me on [Twitter](https://twitter.com/TheAngularGuy?ref_src=twsrc%5Etfw) to get updated on when the next one might come out.
+I'm working on a lot of awesome posts and tutorials to come. If you liked this one, make sure to follow me on [Twitter](https://twitter.com/TheAngularGuy?ref_src=twsrc%5Etfw) or connect with me on [LinkedIn](https://www.linkedin.com/in/mustapha-aouas-7918a214b/) to get updated on when the next one might come out.
 
 ## What to read next?
 
