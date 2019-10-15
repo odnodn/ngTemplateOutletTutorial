@@ -69,6 +69,8 @@ In the code above, the child component will have a paragraph containing 'Joe - 4
 
 Well, enough with the definitions. Let's start coding.
 
+> The code that will be displayed in this article could be found [in this Github repository](https://github.com/TheAngularGuy/ngTemplateOutletTutorial)
+
 # Use case #1: Context-aware template
 
 Let's build a list component that takes two inputs from its parent:
