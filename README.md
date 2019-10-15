@@ -1,6 +1,6 @@
 # Introduction
 
-To build reusable and developer friendly components, we need to make them more dynamic (read more adaptable). Great news, Angular comes with some great tools for that. For instance, we could inject content to our components using `<ng-content>`:
+To build reusable and developer-friendly components, we need to make them more dynamic (read more adaptable). Great news, Angular comes with some great tools for that. For instance, we could inject content to our components using `<ng-content>`:
 
 ```typescript
 @Component({
@@ -29,7 +29,7 @@ export class ParentComponent {}
 Although this transclusion technique is great for simple content projection, what if you want your projected content to be context-aware. For example, while implementing a list component you want the items template to be defined in the parent component while being context-aware (of what is the current item it hosts).
 For those kinds of scenarios, Angular comes with a great API called `ngTemplateOutlet`!
 
-In this post, we will define what `ngTemplateOutlet` is, then we will build the list component we mentioned above as well as a card component to see two most common `ngTemplateOutlet` use-cases. We will do the implementation of these components step-by-step, so by the end of this post you should feel comfortable using this in your Angular components :)
+In this post, we will define what `ngTemplateOutlet` is, then we will build the list component we mentioned above as well as a card component to see the two most common `ngTemplateOutlet` use-cases. We will do the implementation of these components step-by-step, so by the end of this post, you should feel comfortable using this in your Angular components :)
 
 # Definition
 
@@ -65,20 +65,21 @@ If you find this too abstract, here is an example of how to use it:
 <figcaption>Snippet 2: ngTemplateOutlet usage</figcaption>
 
 In the code above, the child component will have a paragraph containing 'Joe - 42'.
-<b>Note</b> that for the name (`let-name`) we did not specify which property of the context object we had to use because the name was stored in the `$implicit` property. In the other hand, for the age (`let-age="age"`) we did specify the name of the property to use (in this case it was `age`).
+<b>Note</b> that for the name (`let-name`) we did not specify which property of the context object we had to use because the name was stored in the `$implicit` property. On the other hand, for the age (`let-age="age"`) we did specify the name of the property to use (in this case it was `age`).
 
 Well, enough with the definitions. Let's start coding.
 
 # Use case #1: Context-aware template
 
-Let's build a list component that takes two inputs from it's parent:
+Let's build a list component that takes two inputs from its parent:
 
 1. data: A list of objects.
 2. itemTemplate: a template that will be used to represent each element of the list.
 
 > run `ng new templateOutletTutorial --minimal` to generate a small Angular project to code along
 
-Let's generate the list component using the Angular schematics (`ng g c components/list`). Once that's done let's implement the component which should look like this:
+Let's generate the list component using the Angular schematics (`ng g c components/list`). Once that's done let's implement the component which will display every item of the data property (the inputted list). On every iteration of the `ng-for`, it will insert an embedded view that the parent component gives us in the itemTemplate property. While doing so, the component should attach a context object containing the current item.
+At the end the list component should look like this:
 
 ```typescript
 @Component({
@@ -104,7 +105,7 @@ export class ListComponent {
 
 <figcaption>Snippet 3.1: List component implementation</figcaption>
 
-Then in the parent component we need to call the list component with a list (of objects) and a template reference:
+Then in the parent component, we need to call the list component with a list (of objects) and a template reference:
 
 ```html
 <app-list
@@ -125,7 +126,7 @@ Then in the parent component we need to call the list component with a list (of 
 <figcaption>Snippet 3.2: Parent component template</figcaption>
 
 <b>Note</b> that we placed the ng-template (item template) inside the app-list component tags. This is only for readability, you could place the item template anywhere you want in the parent template.
-Also i put some inline styles in the item template, but you could also give it a class and style it in the parent component style file.
+Also, I put some inline styles in the item template, but you could also give it a class and style it in the parent component style file.
 
 # Use case #2: Template overloading
 
@@ -136,7 +137,7 @@ For this, we will build a card component that consists of two parts:
 1. title: A title for the card.
 2. content: The main content of the card.
 
-For the title we will pass a simple string, and for the content we can inject it using content projection. Let's do just that after creating the card component with the Angular schematics (`ng g c components/card`), the component should look like this:
+For the title, we will pass a simple string, and for the content, we can inject it using content projection. Let's do just that after creating the card component with the Angular schematics (`ng g c components/card`), the component should look like this:
 
 ```typescript
 @Component({
@@ -158,16 +159,19 @@ export class CardComponent {
 ```
 
 <figcaption>Snippet 4.1: Card component with a string *title*</figcaption>
-We call it the parent component template:
+
+We call it in the parent component template:
+
 ```html
 <app-card [title]="'hello there'">
   <p>i'm an awesome card.</p>
 </app-card>
 ```
+
 <figcaption>Snippet 4.2: Parent component template with a string *title*</figcaption>
 
 Now let's say we want to put an image (`<img>`) in the title, or use another component in the title template. We would be stuck because the title property only takes a string.
-To solve this problem, we could implement a new behavior in our card component. We could say that the title could be a string or a TemplateRef. In case it is a string we will use string interpolation to bind it to the template, otherwise we will use `ngTemplateOutlet`.
+To solve this problem, we could implement a new behavior in our card component. We could say that the title could be a string or a TemplateRef. In case it is a string we will use string interpolation to bind it to the template, otherwise, we will use `ngTemplateOutlet`.
 After implementing the changes, the new card component should then look like this:
 
 ```typescript
@@ -195,7 +199,7 @@ export class CardComponent {
 
 <figcaption>Snippet 4.3: Card component with a strTemplateRef *title*</figcaption>
 
-We call it the parent component template like this:
+We call it in the parent component template like this:
 
 ```html
 <app-card [title]="title">
@@ -207,6 +211,11 @@ We call it the parent component template like this:
 <figcaption>Snippet 4.4: Parent component template with a TemplateRef *title*</figcaption>
 
 # Wrapping up
+
+![Wrapping up gif](https://media.giphy.com/media/S6PJSHMftMyPK/giphy.gif)
+
+So, we saw what `ngTemplateOutlet` is and how we could take advantage of it. We saw two of the most common use-cases, but now that you know about this technique maybe you will find another great use-case!
+I hope you learned something useful and as always: Happy codding :)
 
 ---
 
