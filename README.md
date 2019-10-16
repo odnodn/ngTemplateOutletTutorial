@@ -111,12 +111,12 @@ Then in the parent component, we need to call the list component with a list (of
 
 ```html
 <app-list
-  [itemTemplate]="item"
+  [itemTemplate]="customItemTemplate"
   [data]="[{ id: 4, name: 'Laptop', rating: 3 },
     { id: 5, name: 'Phone', rating: 4 },
     { id: 6, name: 'Mice', rating: 4 }]"
 >
-  <ng-template #item let-item>
+  <ng-template #customItemTemplate let-item>
     <div style="display: flex; justify-content: space-between;">
       <span> {{ item.id }} - <b>{{ item.name }}</b> </span>
       <mark> Stars: {{ item.rating }} </mark>
